@@ -41,6 +41,6 @@
 *.dwo
 
 .vscode/
-
+.cache/
 /subprojects/*
 !/subprojects/*.wrap
