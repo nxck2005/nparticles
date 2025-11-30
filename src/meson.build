@@ -1,4 +1,4 @@
-sources = files('main.cpp')
+sources = files('main.cpp', 'engine.cpp')
 
 executable('nparticles',
     sources,
