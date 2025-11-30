@@ -2,18 +2,18 @@
 #include <vec3.hpp>
 #include <thread>
 #include <chrono>
+#include <random>
 #include "./engine.hpp"
 
 const int TPS = 60;
 const float DESIRED_DT = 1.0f / TPS;
 std::chrono::duration<float> DESIRED_DT_CHRONO{DESIRED_DT};
 std::chrono::milliseconds DESIRED_DT_CHRONO_MS = std::chrono::duration_cast<std::chrono::milliseconds>(DESIRED_DT_CHRONO);
-const int N = 99999;
+const int N = 250;
 const int NVEC = 5;
-const int WALL_HEIGHT = 100;
-const int WALL_WIDTH = 50;
+// const int WALL_HEIGHT = 100;
+// const int WALL_WIDTH = 50;
 const float GFORCE = -9.8f;
-
 
 
 int main() {
@@ -22,6 +22,9 @@ int main() {
     typedef std::chrono::duration<float> fsec;
     typedef std::chrono::seconds sec;
     std::println("\033[2J\033[Hnparticles 0.1.0");
+    std::random_device rd; // Obtain a random number from hardware
+    std::mt19937 gen(rd()); // Seed the Mersenne Twister engine with a random device
+    std::uniform_real_distribution<float> dis(0.0f, 1.0f); // Define a uniform distribution for floats
     std::this_thread::sleep_for(sec(1));
     std::print("\033[2J\033[H");
 
@@ -31,9 +34,9 @@ int main() {
     }
     auto prevfinish = Time::now();
 
+
     // sim loop
     while (true) {
-
         // current time, chrono duration
         auto curriter = Time::now();
         // difference as duration<float>
@@ -45,9 +48,13 @@ int main() {
         if (dt.count() > 0) {
             fps = (int) (1000.0f / dt.count());
         }
-        std::println("\033[2J\033[H {}\n{} FPS\n{} particles\n", dt, fps, N);
+        std::print("\033[2J\033[H");
+        std::println("{}\n{}FPS\n{} particles\n", dt, fps, N);
         for (int i = 0; i < N; i++) {
-            p[i].doTick(deltat.count(), nvec3::Vec3(1.0f, 0.0f, 0.0f));
+            float fx = dis(gen);
+            float fy = dis(gen);
+            float fz = dis(gen);
+            p[i].doTick(deltat.count(), nvec3::Vec3(fx, fy, fz));
         }
         for (int i = 0; i < NVEC; i++) std::println("Particle {} : {}", i, p[i].pos);
 
