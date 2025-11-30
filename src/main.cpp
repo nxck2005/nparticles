@@ -8,15 +8,13 @@ const int TPS = 60;
 const float DESIRED_DT = 1.0f / TPS;
 std::chrono::duration<float> DESIRED_DT_CHRONO{DESIRED_DT};
 std::chrono::milliseconds DESIRED_DT_CHRONO_MS = std::chrono::duration_cast<std::chrono::milliseconds>(DESIRED_DT_CHRONO);
-const int NVEC = 10;
+const int N = 99999;
+const int NVEC = 5;
 const int WALL_HEIGHT = 100;
 const int WALL_WIDTH = 50;
 const float GFORCE = -9.8f;
 
-void draw_wall() {
-    // TODO
-    return;
-}
+
 
 int main() {
     typedef std::chrono::high_resolution_clock Time;
@@ -27,9 +25,9 @@ int main() {
     std::this_thread::sleep_for(sec(1));
     std::print("\033[2J\033[H");
 
-    Engine::Point p[NVEC];
-    for (int i = 0; i < NVEC; i++) {
-        p[i] = Engine::Point(50.0f, 28.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, GFORCE, 1);
+    Engine::Point p[N];
+    for (int i = 0; i < N; i++) {
+        p[i] = Engine::Point(50.0f, 28.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, GFORCE, 1.0f);
     }
     auto prevfinish = Time::now();
 
@@ -38,19 +36,28 @@ int main() {
 
         // current time, chrono duration
         auto curriter = Time::now();
-
-        // simulation of points bouncing
-
         // difference as duration<float>
         fsec deltat = curriter - prevfinish;
 
         // cast the difference to chronoms
         ms dt = std::chrono::duration_cast<ms>(deltat);
-        int fps = (int) 1000.0f / dt.count();
-        std::println("\033[2J\033[H {}\n{} FPS", dt, fps);
+        int fps = 0;
+        if (dt.count() > 0) {
+            fps = (int) (1000.0f / dt.count());
+        }
+        std::println("\033[2J\033[H {}\n{} FPS\n{} particles\n", dt, fps, N);
+        for (int i = 0; i < N; i++) {
+            p[i].doTick(deltat.count(), nvec3::Vec3(1.0f, 0.0f, 0.0f));
+        }
+        for (int i = 0; i < NVEC; i++) std::println("Particle {} : {}", i, p[i].pos);
 
-        ms tts = DESIRED_DT_CHRONO_MS - dt;
+        auto work_done = Time::now();
+        ms work_dt = std::chrono::duration_cast<ms>(work_done - curriter);
+        ms tts = DESIRED_DT_CHRONO_MS - work_dt;
+
         prevfinish = curriter;
-        std::this_thread::sleep_for(ms(tts));
+        if (tts.count() > 0) {
+            std::this_thread::sleep_for(tts);
+        }
     }
 }

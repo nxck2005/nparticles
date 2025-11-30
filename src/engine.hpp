@@ -12,7 +12,7 @@ namespace Engine {
             constexpr Point(float px, float py, float pz, float vx, float vy, float vz,
                 float ax, float ay, float az, float g, float m) :
                 pos(px, py, pz), vel(vx, vy, vz),
-                accel(ax, ay, az), gravity(0.0f, -g, 0.0f), mass(m) {}
+                accel(ax, ay, az), gravity(0.0f, g, 0.0f), mass(m) {}
 
             constexpr Point(): pos(0.0f, 0.0f, 0.0f), vel(0.0f, 0.0f, 0.0f),
                 accel(0.0f, 0.0f, 0.0f), gravity(0.0f, -9.8f, 0.0f), mass(1.0f) {}
