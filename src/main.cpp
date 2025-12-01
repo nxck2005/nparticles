@@ -9,7 +9,7 @@ const int TPS = 60;
 const float DESIRED_DT = 1.0f / TPS;
 std::chrono::duration<float> DESIRED_DT_CHRONO{DESIRED_DT};
 std::chrono::milliseconds DESIRED_DT_CHRONO_MS = std::chrono::duration_cast<std::chrono::milliseconds>(DESIRED_DT_CHRONO);
-const int N = 250;
+const int N = 15000;
 const int NVEC = 5;
 // const int WALL_HEIGHT = 100;
 // const int WALL_WIDTH = 50;
@@ -34,7 +34,7 @@ int main() {
     }
     auto prevfinish = Time::now();
 
-
+    long long tick = 0;
     // sim loop
     while (true) {
         // current time, chrono duration
@@ -49,7 +49,7 @@ int main() {
             fps = (int) (1000.0f / dt.count());
         }
         std::print("\033[2J\033[H");
-        std::println("{}\n{}FPS\n{} particles\n", dt, fps, N);
+        std::println("{}\tTick: {}\n{}FPS\n{} particles\n", dt, tick, fps, N);
         for (int i = 0; i < N; i++) {
             float fx = dis(gen);
             float fy = dis(gen);
@@ -57,7 +57,7 @@ int main() {
             p[i].doTick(deltat.count(), nvec3::Vec3(fx, fy, fz));
         }
         for (int i = 0; i < NVEC; i++) std::println("Particle {} : {}", i, p[i].pos);
-
+	tick++;
         auto work_done = Time::now();
         ms work_dt = std::chrono::duration_cast<ms>(work_done - curriter);
         ms tts = DESIRED_DT_CHRONO_MS - work_dt;
