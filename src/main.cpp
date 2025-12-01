@@ -9,7 +9,7 @@ const int TPS = 60;
 const float DESIRED_DT = 1.0f / TPS;
 std::chrono::duration<float> DESIRED_DT_CHRONO{DESIRED_DT};
 std::chrono::milliseconds DESIRED_DT_CHRONO_MS = std::chrono::duration_cast<std::chrono::milliseconds>(DESIRED_DT_CHRONO);
-const int N = 15000;
+const int N = 100000;
 const int NVEC = 5;
 // const int WALL_HEIGHT = 100;
 // const int WALL_WIDTH = 50;
@@ -63,8 +63,9 @@ int main() {
         ms tts = DESIRED_DT_CHRONO_MS - work_dt;
 
         prevfinish = curriter;
-        if (tts.count() > 0) {
-            std::this_thread::sleep_for(tts);
-        }
+	// uncomment to lock to a certain fps
+        //if (tts.count() > 0) {
+        //    std::this_thread::sleep_for(tts);
+        //}
     }
 }
