@@ -10,7 +10,7 @@ const float DESIRED_DT = 1.0f / TPS;
 std::chrono::duration<float> DESIRED_DT_CHRONO{DESIRED_DT};
 std::chrono::milliseconds DESIRED_DT_CHRONO_MS = std::chrono::duration_cast<std::chrono::milliseconds>(DESIRED_DT_CHRONO);
 const int N = 10;
-const int NVEC = 5;
+// const int NVEC = 5;
 const float GFORCE = -9.8f;
 
 const int WALL_HEIGHT = 100;
@@ -19,6 +19,7 @@ const int WALL_WIDTH = 50;
 void printWall(int width, int height) {
     //std::println("-");
     for (int i = 0; i < width; i++) std::printf("-");
+    for (int i = 0; i < height; i++);
 }
 
 int main() {
@@ -39,7 +40,7 @@ int main() {
 
     Engine::Point p[N];
     for (int i = 0; i < N; i++) {
-        p[i] = Engine::Point(50.0f, 28.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, GFORCE, 1.0f);
+        p[i] = Engine::Point(50.0f, 28.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, GFORCE, 1.0f, 1.0f);
     }
     auto prevfinish = Time::now();
 
@@ -66,8 +67,6 @@ int main() {
             float fz = dis(gen);
             p[i].doTick(deltat.count(), nvec3::Vec3(fx, fy, fz));
         }
-        // DEBUG: print vec vals
-        // for (int i = 0; i < NVEC; i++) std::println("Particle {} : {}", i, p[i].pos);
 	    frames++;
         auto work_done = Time::now();
         ms work_dt = std::chrono::duration_cast<ms>(work_done - curriter);
